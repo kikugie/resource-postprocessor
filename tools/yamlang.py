@@ -9,6 +9,9 @@ Usage: python yamlang.py <input.json> <output.yaml>
 Currently doesn't support list entires from owo-lib rich translations.
 """
 
+def sanitize_value(value: str) -> str:
+    return f'"{value.replace("\"", "\\\"")}"'
+
 def apply_wrapping(key: str, value: str, indent: str) -> list[str]:
     lines = []
     split = value.splitlines()
@@ -22,7 +25,7 @@ def apply_wrapping(key: str, value: str, indent: str) -> list[str]:
         for line in split:
             lines.append(f'{indent}  {line}')
     else:
-        lines.append(f'{indent}{key}: {value}')
+        lines.append(f'{indent}{key}: {sanitize_value(value)}')
     return lines
 
 
