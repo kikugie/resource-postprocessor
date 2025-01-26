@@ -5,18 +5,12 @@ import dev.kikugie.postprocess.gradle.PostProcessorGroup
 import dev.kikugie.postprocess.gradle.applyToSpec
 import dev.kikugie.postprocess.gradle.child
 import dev.kikugie.postprocess.gradle.getOrReport
-import dev.kikugie.postprocess.gradle.verify
-import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.FileTree
 import org.gradle.api.problems.ProblemSpec
 import org.gradle.api.problems.Problems
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import java.io.File
 import javax.inject.Inject
 
@@ -65,15 +59,17 @@ abstract class PostProcessTask : SourceTask() {
         val usedProcessors = mutableSetOf<ResourcePostProcessor>()
         while (true) {
             val match = processors.get().find {
-                it.runCatching { relocate(finalized) }.getOrReport(problems) {e ->
+                if (it in usedProcessors) return@find false
+                val dest = it.runCatching { relocate(finalized) }.getOrReport(problems) {e ->
                     applyReportID(it)
                     withException(e)
                     contextualLabel("An exception occurred while relocating $file")
                     logger.error("[PostProcessor] Error while relocating $file with ${it.display}", e)
-                }?.also { finalized = it } != null
+                } ?: return@find false
+                finalized = dest
+                true
             } ?: break
-            if (match in usedProcessors) break
-            else usedProcessors += match
+            usedProcessors += match
         }
 
         var result = file.readText()

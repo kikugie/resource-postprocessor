@@ -5,9 +5,7 @@ import com.google.gson.JsonParser
 import dev.kikugie.postprocess.api.ResourcePostProcessor
 import dev.kikugie.postprocess.createGson
 import org.gradle.api.Project
-import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.util.PatternFilterable
 import org.quiltmc.parsers.json.JsonReader
 import org.quiltmc.parsers.json.gson.GsonReader
 import java.io.File
@@ -36,6 +34,7 @@ open class J52JExtension(@Transient override val project: Project? = null) : Res
     override val display: String = "J52JExtension"
     override var sources: Set<SourceSet>? = null
 
+    /**Enables indentation in the resulting JSON file. Due to [Gson] limitations, the indent can only be two spaces.*/
     var prettyPrint: Boolean = false
 
     override fun convert(input: String): String = convertJson(input, createGson(prettyPrint))

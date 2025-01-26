@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.yaml:snakeyaml:2.3")
+    implementation("org.snakeyaml:snakeyaml-engine:2.9")
     implementation("org.quiltmc.parsers:gson:0.2.1")
     testImplementation(kotlin("test"))
 }
