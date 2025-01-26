@@ -34,7 +34,7 @@ A Gradle plugin that converts `.json5` files into `.json`.
 ```kotlin
 // build.gradle[.kts]
 plugins {
-    id ("dev.kikugie.postprocess") version "2.1-beta.1"
+    id ("dev.kikugie.postprocess") version "2.1-beta.2"
     id ("dev.kikugie.postprocess.j52j")
 }
 
@@ -104,7 +104,7 @@ To the JSON file compatible with Minecraft translation style:
 ```kotlin
 // build.gradle[.kts]
 plugins {
-    id ("dev.kikugie.postprocess") version "2.1-beta.1"
+    id ("dev.kikugie.postprocess") version "2.1-beta.2"
     id ("dev.kikugie.postprocess.yamlang")
 }
 
@@ -193,7 +193,7 @@ To the JSON file compatible with Minecraft translation style:
 ```kotlin
 // build.gradle[.kts]
 plugins {
-    id ("dev.kikugie.postprocess") version "2.1-beta.1"
+    id ("dev.kikugie.postprocess") version "2.1-beta.2"
     id ("dev.kikugie.postprocess.jsonlang")
 }
 

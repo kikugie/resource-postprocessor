@@ -30,7 +30,10 @@ open class PostProcessPlugin : Plugin<Project> {
 
     private fun registerProcessor(project: Project, processor: ResourcePostProcessor) {
         project.extensions.getByType(PostProcessExtension::class.java).processors += processor
-        project.tasks.filterIsInstance<PostProcessTask>().forEach { it.processors.add(processor) }
+        project.sourceSets?.forEach {
+            val task = project.tasks.findByName(it.postProcessTask) as? PostProcessTask ?: return@forEach
+            task.processors.add(processor)
+        }
     }
 
     private fun configureTaskManagement(project: Project, extension: PostProcessExtension) = project.sourceSets?.apply {
