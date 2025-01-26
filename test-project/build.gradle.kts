@@ -2,7 +2,7 @@ plugins {
     java
     id("dev.kikugie.postprocess.j52j")
     id("dev.kikugie.postprocess.yamlang")
-    id("dev.kikugie.postprocess.jsontree")
+    id("dev.kikugie.postprocess.jsonlang")
 }
 
 sourceSets {
@@ -16,7 +16,7 @@ yamlang {
     languageDirectory = "lang"
 }
 
-jsontree {
+jsonlang {
     prettyPrint = true
     languageDirectory = "lang"
 }
