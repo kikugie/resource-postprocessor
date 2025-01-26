@@ -213,7 +213,7 @@ jsonlang {
     // Allows lists in language entries for https://docs.wispforest.io/owo/rich-translations/ compatibility.
     allowListEntries = true
     
-    // Allows duplicate keys in both YAML and resulting JSON to override previous values.
+    // Allows duplicate keys in the resulting JSON to override previous values.
     allowDuplicateKeys = true
 }
 ```
