@@ -108,7 +108,7 @@ plugins {
     id ("dev.kikugie.postprocess.yamlang")
 }
 
-j52j {
+yamlang {
     /* Overrides sources processed by the plugin.
     By default, it dynamically adds all registered sources,
     so this is not required unless you want some sources to not be processed.*/
@@ -197,7 +197,7 @@ plugins {
     id ("dev.kikugie.postprocess.jsonlang")
 }
 
-j52j {
+jsonlang {
     /* Overrides sources processed by the plugin.
     By default, it dynamically adds all registered sources,
     so this is not required unless you want some sources to not be processed.*/
@@ -215,5 +215,43 @@ j52j {
     
     // Allows duplicate keys in both YAML and resulting JSON to override previous values.
     allowDuplicateKeys = true
+}
+```
+
+# Custom processors
+Additional logic can be added by third-party or convention plugins to the resource processing.
+Registering a processor through the plugin allows it to mitigate most of the order-dependency issues,
+as well as improve execution speed and error reports.
+
+### Implementation
+A custom processor must implement [ResourcePostProcessor](https://github.com/stonecutter-versioning/resource-postprocessor/blob/master/src/main/kotlin/dev/kikugie/postprocess/api/ResourcePostProcessor.kt) interface. 
+Refer to the KDoc comments for implementation details.
+
+The processor must have a constructor that accepts a transient Gradle `Project` instance.
+```java
+public class MyResourceProcessor implements ResourcePostProcessor {
+    transient private final Project project;
+    
+    public MyResourceProcessor(@Nullable Project project) {
+        this.project = project;
+    }
+    
+    // The rest of the implementation
+}
+```
+
+The processor will be registered as an extension, allowing it to be configured as shown in plugins above.
+Processors have to be registered in the plugin entrypoint.
+This will automatically apply the base plugin if needed.
+```java
+void apply(Project target) {
+    PostProcessPlugin.register(target, "myplugin", MyResourceProcessor.class);
+}
+```
+In this example extension named `myplugin` will be created and can be accessed with
+```kotlin
+// build.gradle.kts
+myplugin {
+    // ...
 }
 ```

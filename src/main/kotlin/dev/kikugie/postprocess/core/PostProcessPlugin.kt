@@ -10,14 +10,13 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findPlugin
 import org.gradle.kotlin.dsl.register
-import kotlin.reflect.KClass
 
 open class PostProcessPlugin : Plugin<Project> {
     companion object {
-        inline fun <reified T : ResourcePostProcessor> register(project: Project, name: String) =
-            register(project, name, T::class)
+        @JvmStatic inline fun <reified T : ResourcePostProcessor> register(project: Project, name: String) =
+            register(project, name, T::class.java)
 
-        fun register(project: Project, name: String, cls: KClass<out ResourcePostProcessor>) = with(project.plugins) {
+        @JvmStatic fun register(project: Project, name: String, cls: Class<out ResourcePostProcessor>) = with(project.plugins) {
             val extension = project.extensions.create(name, cls, project)
             findPlugin(PostProcessPlugin::class)?.registerProcessor(project, extension)
                 ?: apply(PostProcessPlugin::class).registerProcessor(project, extension)
