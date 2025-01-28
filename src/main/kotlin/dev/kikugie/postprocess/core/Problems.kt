@@ -1,7 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 @file:OptIn(ExperimentalContracts::class)
 
-package dev.kikugie.postprocess.gradle
+package dev.kikugie.postprocess.core
 
 import org.gradle.api.problems.ProblemGroup
 import org.gradle.api.problems.ProblemSpec

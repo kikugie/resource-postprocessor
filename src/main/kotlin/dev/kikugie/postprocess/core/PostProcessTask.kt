@@ -1,10 +1,6 @@
 package dev.kikugie.postprocess.core
 
 import dev.kikugie.postprocess.api.ResourcePostProcessor
-import dev.kikugie.postprocess.gradle.PostProcessorGroup
-import dev.kikugie.postprocess.gradle.applyToSpec
-import dev.kikugie.postprocess.gradle.child
-import dev.kikugie.postprocess.gradle.getOrReport
 import org.gradle.api.file.FileTree
 import org.gradle.api.problems.ProblemSpec
 import org.gradle.api.problems.Problems
@@ -57,20 +53,18 @@ abstract class PostProcessTask : SourceTask() {
     private fun processFile(file: File) = runCatching {
         var finalized = file
         val usedProcessors = mutableSetOf<ResourcePostProcessor>()
-        while (true) {
-            val match = processors.get().find {
-                if (it in usedProcessors) return@find false
-                val dest = it.runCatching { relocate(finalized) }.getOrReport(problems) {e ->
-                    applyReportID(it)
-                    withException(e)
-                    contextualLabel("An exception occurred while relocating $file")
-                    logger.error("[PostProcessor] Error while relocating $file with ${it.display}", e)
-                } ?: return@find false
-                finalized = dest
-                true
-            } ?: break
-            usedProcessors += match
-        }
+        while (true) usedProcessors += processors.get().find {
+            if (it in usedProcessors) return@find false
+            val dest = it.runCatching { relocate(finalized) }.getOrReport(problems) {e ->
+                applyReportID(it)
+                withException(e)
+                contextualLabel("An exception occurred while relocating $file")
+                logger.error("[PostProcessor] Error while relocating $file with ${it.display}", e)
+            } ?: return@find false
+            finalized = dest
+            true
+        } ?: break
+        if (usedProcessors.isEmpty()) return@runCatching
 
         var result = file.readText()
         for (processor in usedProcessors) result = runCatching {
@@ -84,7 +78,7 @@ abstract class PostProcessTask : SourceTask() {
 
         finalized.runCatching {
             writeText(result)
-            if (file != this) file.delete();
+            if (file != this) file.delete()
             this
         }.getOrReport(problems) {
             applyReportID("io-error", "IO")
