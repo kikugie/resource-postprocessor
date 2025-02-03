@@ -83,7 +83,12 @@ open class YamLangExtension(@Transient override val project: Project? = null) : 
      * Path to the language file directory starting from `src/{any}/resources/`.
      * When `null`, no files will be processed.
      */
-    var languageDirectory: String? = null
+    @Deprecated("Use 'languageDirectories' instead.", ReplaceWith("languageDirectories = listOf(value)"))
+    var languageDirectory: String?
+        get() = languageDirectories.firstOrNull()
+        set(value) { languageDirectories = listOfNotNull(value) }
+
+    var languageDirectories: Collection<String> = emptyList()
 
     /**
      * Allows duplicated keys in the YAML files and resulting JSON.
@@ -127,9 +132,10 @@ open class YamLangExtension(@Transient override val project: Project? = null) : 
         }
 
     override fun relocate(file: File): File? = when {
-        languageDirectory == null -> null
+        languageDirectories.isEmpty() -> null
         file.extension != "yml" && file.extension != "yaml" -> null
-        !file.parentFile.invariantSeparatorsPath.endsWith(languageDirectory!!) -> null
+        file.parentFile.invariantSeparatorsPath.let {
+            languageDirectories.none(it::endsWith) } -> null
         else -> file.resolveSibling("${file.nameWithoutExtension}.json")
     }
 

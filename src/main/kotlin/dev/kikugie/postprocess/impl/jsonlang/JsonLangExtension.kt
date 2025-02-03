@@ -56,7 +56,12 @@ open class JsonLangExtension(@Transient override val project: Project? = null) :
     override var sources: Set<SourceSet>? = null
 
     /**Path to the language file directory starting from `src/{any}/resources/`. When `null`, no files will be processed.*/
-    var languageDirectory: String? = null
+    @Deprecated("Use 'languageDirectories' instead.", ReplaceWith("languageDirectories = listOf(value)"))
+    var languageDirectory: String?
+        get() = languageDirectories.firstOrNull()
+        set(value) { languageDirectories = listOfNotNull(value) }
+
+    var languageDirectories: Collection<String> = emptyList()
     /**Enables indentation in the resulting JSON file. Due to [Gson] limitations, the indent can only be two spaces.*/
     var prettyPrint: Boolean = false
     /**Allows lists in language entries for [owo-lib rich translations](https://docs.wispforest.io/owo/rich-translations/) compatibility.*/
@@ -77,9 +82,10 @@ open class JsonLangExtension(@Transient override val project: Project? = null) :
     var allowDuplicateKeys: Boolean = false
 
     override fun relocate(file: File): File? = when {
-        languageDirectory == null -> null
+        languageDirectories.isEmpty() -> null
         file.extension != "json" && file.extension != "json5" -> null
-        !file.parentFile.invariantSeparatorsPath.endsWith(languageDirectory!!) -> null
+        file.parentFile.invariantSeparatorsPath.let {
+            languageDirectories.none(it::endsWith) } -> null
         else -> file.resolveSibling("${file.nameWithoutExtension}.json")
     }
 
