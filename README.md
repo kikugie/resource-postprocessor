@@ -34,7 +34,7 @@ A Gradle plugin that converts `.json5` files into `.json`.
 ```kotlin
 // build.gradle[.kts]
 plugins {
-    id ("dev.kikugie.postprocess.j52j") version "2.1-beta.3"
+    id ("dev.kikugie.postprocess.j52j") version "2.1-beta.4"
 }
 
 j52j {
@@ -103,7 +103,7 @@ To the JSON file compatible with Minecraft translation style:
 ```kotlin
 // build.gradle[.kts]
 plugins {
-    id ("dev.kikugie.postprocess.yamlang") version "2.1-beta.3"
+    id ("dev.kikugie.postprocess.yamlang") version "2.1-beta.4"
 }
 
 yamlang {
@@ -113,7 +113,7 @@ yamlang {
     sources(sourceSets["main"])
 
     // Path to the language file directory starting from `src/{any}/resources/`. When `null`, no files will be processed.
-    languageDirectory = "assets/${modId}/lang"
+    languageDirectories = listOf("assets/${modId}/lang")
 
     /* Enables indentation in the processed JSON files.
     Due to limitations of Gson, the indent can only be two spaces.*/
@@ -191,7 +191,7 @@ To the JSON file compatible with Minecraft translation style:
 ```kotlin
 // build.gradle[.kts]
 plugins {
-    id ("dev.kikugie.postprocess.jsonlang") version "2.1-beta.3"
+    id ("dev.kikugie.postprocess.jsonlang") version "2.1-beta.4"
 }
 
 jsonlang {
@@ -201,7 +201,7 @@ jsonlang {
     sources(sourceSets["main"])
 
     // Path to the language file directory starting from `src/{any}/resources/`. When `null`, no files will be processed.
-    languageDirectory = "assets/${modId}/lang"
+    languageDirectories = listOf("assets/${modId}/lang")
 
     /* Enables indentation in the processed JSON files.
     Due to limitations of Gson, the indent can only be two spaces.*/
